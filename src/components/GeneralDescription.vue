@@ -19,7 +19,7 @@
       <!-- eslint-disable -->
       <component v-for="item in objectType" v-if="descType !== 'trackList'" :is="card" v-bind="{[descType]: item}" :key="item.id" />
       <!-- eslint-disable -->
-      <app-track-list-card v-else :track-list="objectType" />
+      <app-track-list-card :track-list="objectType" />
     </app-description-white>
   </div>
 </template>

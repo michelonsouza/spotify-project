@@ -3,8 +3,8 @@ import { Client } from "spotify-sdk";
 const client = Client.instance;
 
 client.settings = {
-  clientId: "INSERIR_SEU_CLIENT_ID",
-  secretId: "INSERIR_SUA_SECRET_ID",
+  clientId: "63dec9595d174907b1bf785013c216f9",
+  secretId: "c2d80b82224642cfa28e69fa49050cef",
   scopes: [
     "user-follow-modify user-follow-read user-library-read user-top-read"
   ],
