@@ -1,14 +1,14 @@
 # Vuefy Project
 
+## Vue CLI
+
+- @vue/cli version = ^3.0.5
+
 ## Vuefy Setup
 
 ```bash
 git clone https://github.com/michelonsouza/spotify-project.git
 ```
-
-## Vue CLI
-
-- @vue/cli version = ^3.0.5
 
 ### Após a clonagem entre na pasta com seu Terminal (powershell, bash ou terminal MacOS)
 
