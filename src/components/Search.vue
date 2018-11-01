@@ -1,25 +1,8 @@
 <template>
-  <b-col 
-    cols="12" 
-    md="8" 
-    offset-md="2" 
-    lg="6" 
-    offset-lg="3">
-    <b-nav-form 
-      class="py-4" 
-      autocomplete="off">
-      <b-form-input 
-        v-model="value" 
-        size="lg" 
-        class="search" 
-        type="text" 
-        placeholder="Buscar..." />
-      <b-button 
-        id="search-button" 
-        size="lg" 
-        class="btn-search" 
-        type="submit" 
-        @click.prevent="search">
+  <b-col cols="12" md="8" offset-md="2" lg="6" offset-lg="3">
+    <b-nav-form class="py-4" autocomplete="off">
+      <b-form-input v-model="value" size="lg" class="search" type="text" placeholder="Buscar..." />
+      <b-button id="search-button" size="lg" class="btn-search" type="submit" @click.prevent="search">
         <i class="fas fa-search" />
       </b-button>
     </b-nav-form>
@@ -27,7 +10,6 @@
 </template>
 
 <script>
-import * as types from "@/store/types";
 import axios from "axios";
 
 export default {
@@ -45,20 +27,6 @@ export default {
   },
   methods: {
     search() {
-      this.$emit("search");
-      this.$store.dispatch(types[`ACTION_SET_${this.type.toUpperCase()}`], {
-        [this.type]: false,
-        status: false
-      });
-      this.$store.dispatch(
-        types[`ACTION_SET_${this.type.toUpperCase()}_LIST`],
-        { [`${this.type}List`]: false, status: false }
-      );
-
-      const result = {
-        text: this.value,
-        status: true
-      };
       const options = {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -73,25 +41,12 @@ export default {
         .get(url, options)
         .then(res => res.data)
         .then(data => {
-          if (data[`${this.type}s`].items.length > 0) {
-            const type = `ACTION_SET_${this.type.toUpperCase()}_LIST`;
-            const setMethod = types[type];
-            this.$store
-              .dispatch(setMethod, {
-                [`${this.type}List`]: data[`${this.type}s`].items,
-                status: true
-              })
-              .then(() => {
-                this.value = "";
-                this.$emit("searched", result);
-              });
-          } else {
-            result.status = false;
-            this.$emit("searched", result);
-          }
-        })
-        .catch(error => {
-          console.log(error);
+          const returnVal = {
+            data: data,
+            value: this.value
+          };
+          this.$emit("returnData", returnVal);
+          this.value = "";
         });
     }
   }

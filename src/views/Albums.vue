@@ -1,63 +1,126 @@
 <template>
-  <div class="albums">
-    <app-page-header 
-      type="album" 
-      page-title="Álbuns" 
-      @searched="show" 
-      @clean="loading = true" />
-    <transition 
-      name="fade" 
+  <div class="artists pt-5 mt-3">
+    <b-row class="m-0">
+      <app-page-title title="Álbuns" />
+    </b-row>
+    <b-row class="m-0">
+      <app-search 
+        type="album" 
+        @returnData="setData" />
+    </b-row>
+    <transition-group 
+      name="slide" 
       mode="out-in">
       <b-row 
-        v-if="!loading && albumList && !album" 
-        key="album-list" 
-        class="mx-0 mt-3">
-        <app-album-card 
-          v-for="album in albumList" 
-          :key="album.id" 
-          :album="album" />
+        key="not-found" 
+        class="m-0 py-3">
+        <b-container>
+          <p 
+            v-if="notFound" 
+            class="text-center text-white h4">Não encontramos nenhum resultado para <b class="text-light bg-primary px-2">{{ searchText }}</b></p>
+          <p 
+            v-if="!notFound && albums && showSearch" 
+            class="text-center text-white h4">Resultado da busca para <b class="text-light bg-primary px-2">{{ searchText }}</b></p>
+        </b-container>
       </b-row>
-      <app-general-description 
-        v-if="album" 
-        key="general-description" 
-        :object="album" 
-        type="album" 
-        desc-title="Músicas" 
-        class="my-4" />
-    </transition>
+      <b-row 
+        v-if="albums && showSearch" 
+        key="albums" 
+        class="m-0 py-3">
+        <app-album-card 
+          v-for="album in albums" 
+          :key="album.id" 
+          :album="album" 
+          @albumEmit="albumDescShow" />
+      </b-row>
+      <b-row 
+        v-if="loading" 
+        key="loading" 
+        class="m-0 py-3">
+        <b-container class="text-center">
+          <app-loading-icon />
+        </b-container>
+      </b-row>
+      <app-album-description 
+        v-if="showSearch && haveAlbum" 
+        key="albumDescription" />
+    </transition-group>
   </div>
 </template>
 
 <script>
 import * as types from "@/store/types";
-import { mapGetters } from "vuex";
-import PageHeader from "@/components/PageHeader.vue";
-import GeneralDescription from "@/components/GeneralDescription.vue";
+import Search from "@/components/Search.vue";
+import PageTitle from "@/components/PageTitle.vue";
 import AlbumCard from "@/components/AlbumCard.vue";
-import LoagingIcon from "@/components/LoadingIcon.vue";
+import LoadingIcon from "@/components/LoadingIcon.vue";
+import AlbumDescription from "@/components/AlbumDescription.vue";
 
 export default {
   name: "Albums",
   components: {
-    appGeneralDescription: GeneralDescription,
-    appPageHeader: PageHeader,
+    appSearch: Search,
+    appPageTitle: PageTitle,
     appAlbumCard: AlbumCard,
-    appLoagingIcon: LoagingIcon
+    appLoadingIcon: LoadingIcon,
+    appAlbumDescription: AlbumDescription
   },
   data() {
     return {
-      loading: true
+      albums: false,
+      showSearch: true,
+      notFound: false,
+      loading: false,
+      searchText: ""
     };
   },
   computed: {
-    ...mapGetters({
-      albumList: types.GETTER_ALBUM_LIST,
-      album: types.GETTER_ALBUM
-    })
+    haveAlbum() {
+      if (this.$store.getters[types.GETTER_ALBUM]) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  },
+  beforeCreate() {
+    this.$store.dispatch(types.ACTION_VERIFY_LOGIN_ENTER);
   },
   methods: {
-    show() {
-      this.loading = false;
+    setData(returnVal) {
+      this.albums = returnVal.data.albums.items;
+      this.searchText = returnVal.value;
+
+      this.showSearch = false;
+      this.loading = true;
+      this.notFound = false;
+
+      setTimeout(() => {
+        if (this.albums.length === 0) {
+          this.notFound = true;
+          this.showSearch = false;
+        } else {
+          this.notFound = false;
+          this.showSearch = true;
+        }
+        this.loading = false;
+      }, 2000);
+    },
+    albumDescShow(album) {
+      const payload = {
+        album: album,
+        status: true
+      };
+
+      this.$store.dispatch(types.ACTION_SET_ALBUM, payload).then(() => {
+        this.loading = true;
+        this.albums = false;
+        this.showSearch = false;
+        setTimeout(() => {
+          this.loading = false;
+          this.showSearch = true;
+        }, 500);
+      });
     }
   }
 };

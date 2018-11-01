@@ -1,10 +1,8 @@
 <template>
-  <div class="artists">
-    <div class="pt-3">
-      <b-row class="m-0">
-        <app-page-title title="Favoritos" />
-      </b-row>
-    </div>
+  <div class="artists pt-5 mt-3">
+    <b-row class="m-0">
+      <app-page-title title="Favoritos" />
+    </b-row>
     <b-row class="m-0 text-center py-4">
       <b-col 
         cols="12" 
@@ -12,7 +10,23 @@
         offset-md="2" 
         lg="6" 
         offset-lg="3">
-        <b-button-group v-bind="size">
+        <b-button-group v-if="windowWidth">
+          <b-button 
+            :class="{active: artists}" 
+            variant="primary text-uppercase" 
+            @click="show('artists')">Artistas</b-button>
+          <b-button 
+            :class="{active: albums}" 
+            variant="primary text-uppercase" 
+            @click="show('albums')">Álbuns</b-button>
+          <b-button 
+            :class="{active: tracks}" 
+            variant="primary text-uppercase" 
+            @click="show('tracks')">Músicas</b-button>
+        </b-button-group>
+        <b-button-group 
+          v-if="!windowWidth" 
+          size="lg">
           <b-button 
             :class="{active: artists}" 
             variant="primary text-uppercase" 
@@ -29,10 +43,10 @@
       </b-col>
     </b-row>
     <transition-group 
-      name="fade" 
+      name="slide" 
       mode="out-in">
       <b-row 
-        v-if="artists && !loading" 
+        v-if="artistsShow && !loading" 
         key="artists" 
         class="m-0 py-3">
         <app-artist-card 
@@ -40,7 +54,7 @@
           :key="artist.id" 
           :artist="artist" />
         <b-col 
-          v-if="artists === true" 
+          v-if="!artists && artistsShow" 
           cols="12" 
           md="8" 
           offset-md="2" 
@@ -50,7 +64,7 @@
         </b-col>
       </b-row>
       <b-row 
-        v-if="albums && !loading" 
+        v-if="albumsShow && !loading" 
         key="albums" 
         class="m-0 py-3">
         <app-album-card 
@@ -58,7 +72,7 @@
           :key="album.id" 
           :album="album" />
         <b-col 
-          v-if="albums === true" 
+          v-if="!albums && albumsShow" 
           cols="12" 
           md="8" 
           offset-md="2" 
@@ -68,7 +82,7 @@
         </b-col>
       </b-row>
       <b-row 
-        v-if="tracks && !loading" 
+        v-if="tracksShow && !loading" 
         key="tracks" 
         class="m-0 py-3">
         <app-track-card 
@@ -76,7 +90,7 @@
           :key="track.id" 
           :track="track" />
         <b-col 
-          v-if="tracks === true" 
+          v-if="!tracks && tracksShow" 
           cols="12" 
           md="8" 
           offset-md="2" 
@@ -98,6 +112,7 @@
 </template>
 
 <script>
+import * as types from "@/store/types";
 import PageTitle from "@/components/PageTitle.vue";
 import ArtistCard from "@/components/ArtistCard.vue";
 import AlbumCard from "@/components/AlbumCard.vue";
@@ -105,7 +120,7 @@ import TrackCard from "@/components/TrackCard.vue";
 import LoadingIcon from "@/components/LoadingIcon.vue";
 
 export default {
-  name: "Artists",
+  name: "Favorites",
   components: {
     appPageTitle: PageTitle,
     appArtistCard: ArtistCard,
@@ -118,18 +133,25 @@ export default {
       artists: false,
       albums: false,
       tracks: false,
+      artistsShow: false,
+      albumsShow: false,
+      tracksShow: false,
+      showSearch: true,
       loading: false
     };
   },
   computed: {
-    size() {
+    windowWidth() {
       const width = window.innerWidth;
       if (width <= 576) {
-        return {};
+        return true;
       } else {
-        return { size: "lg" };
+        return false;
       }
     }
+  },
+  created() {
+    this.$store.dispatch(types.ACTION_VERIFY_LOGIN_ENTER);
   },
   methods: {
     show(value) {
@@ -137,25 +159,44 @@ export default {
       const albums = JSON.parse(localStorage.getItem("albums"));
       const tracks = JSON.parse(localStorage.getItem("tracks"));
       this.loading = true;
-
       switch (value) {
         case "artists":
-          this.artists = artists ? artists : true;
+          if (artists != null) {
+            this.artists = artists;
+          }
           this.albums = false;
           this.tracks = false;
+          this.artistsShow = true;
+          this.albumsShow = false;
+          this.tracksShow = false;
           break;
         case "albums":
-          (this.albums = albums ? albums : true), (this.artists = false);
+          if (albums != null) {
+            this.albums = albums;
+          }
+          this.artists = false;
           this.tracks = false;
+          this.artistsShow = false;
+          this.albumsShow = true;
+          this.tracksShow = false;
           break;
         case "tracks":
-          (this.tracks = tracks ? tracks : true), (this.artists = false);
+          if (tracks != null) {
+            this.tracks = tracks;
+          }
           this.albums = false;
+          this.artists = false;
+          this.artistsShow = false;
+          this.albumsShow = false;
+          this.tracksShow = true;
           break;
         default:
           this.artists = false;
           this.albums = false;
           this.tracks = false;
+          this.artistsShow = false;
+          this.albumsShow = false;
+          this.tracksShow = false;
       }
       setTimeout(() => {
         this.loading = false;

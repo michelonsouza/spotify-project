@@ -3,6 +3,13 @@ module.exports = {
   env: {
     node: true
   },
+  rules: {
+    "no-console": process.env.NODE_ENV === "production" ? "error" : "off",
+    "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off"
+  },
+  parserOptions: {
+    parser: "babel-eslint"
+  },
   extends: [
     "plugin:vue/base",
     "plugin:vue/essential",
@@ -10,12 +17,5 @@ module.exports = {
     "plugin:vue/strongly-recommended",
     "@vue/airbnb",
     "@vue/prettier"
-  ],
-  rules: {
-    "no-console": process.env.NODE_ENV === "production" ? "error" : "off",
-    "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off"
-  },
-  parserOptions: {
-    parser: "babel-eslint"
-  }
+  ]
 };

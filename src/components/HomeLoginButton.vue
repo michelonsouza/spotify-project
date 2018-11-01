@@ -1,8 +1,7 @@
 <template>
-  <b-btn 
-    variant="primary" 
+  <button 
     class="button-login" 
-    @click="login"><i class="fab fa-spotify" />&nbsp;&nbsp;Entrar no Spotify</b-btn>
+    @click="login"><i class="fab fa-spotify"/>&nbsp;&nbsp;Entrar no Spotify</button>
 </template>
 
 <script>
@@ -25,12 +24,11 @@ export default {
   color: #fff;
   font-size: 1.6rem;
   transition: all 200ms ease;
-  border: 1px solid #fff;
   &:hover,
   &:active,
   &:focus {
-    border-color: var(--primary);
-    background-color: var(--primary);
+    border-color: var(--pink);
+    background-color: var(--pink);
   }
 }
 </style>

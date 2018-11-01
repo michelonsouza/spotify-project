@@ -1,26 +1,27 @@
-import * as types from "@/store/types";
 import Home from "@/views/Home.vue";
+import Auth from "@/views/Auth.vue";
 
 import store from "@/store";
 
-async function verifyAuth(next) {
-  await store.dispatch(types.ACTION_VERIFY_LOGIN_ENTER);
-  next();
+function verifyAuth(next) {
+  const auth = store.state.auth.auth;
+  if (!auth) {
+    next("/");
+  } else {
+    next();
+  }
 }
 
 export default [
   {
     path: "/",
     name: "home",
-    component: Home,
-    beforeEnter(to, from, next) {
-      verifyAuth(next);
-    }
+    component: Home
   },
   {
     path: "/auth",
     name: "auth",
-    component: () => import("@/views/Auth.vue")
+    component: Auth
   },
   {
     path: "/artistas",

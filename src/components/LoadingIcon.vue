@@ -1,8 +1,8 @@
 <template>
   <div class="lds-vuefy">
-    <div />
-    <div />
-    <div />
+    <div/>
+    <div/>
+    <div/>
   </div>
 </template>
 

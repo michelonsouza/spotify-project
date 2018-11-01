@@ -3,7 +3,7 @@
     cols="12" 
     md="6" 
     offset-md="3" 
-    class="py-3 mb-2">
+    class="py-3">
     <h2 
       :class="color" 
       class="text-center display-name text-uppercase">{{ title }}</h2>

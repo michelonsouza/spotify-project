@@ -1,5 +1,5 @@
 export default {
-  authorization: false,
+  auth: false,
   token: false,
   expiresIn: false
 };

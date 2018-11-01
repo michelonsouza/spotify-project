@@ -1,16 +1,6 @@
 <template>
-  <b 
-    v-if="!favorite" 
-    :class="color" 
-    :title="`Adicionar ${object.name} aos Favoritos`" 
-    class="h6 pointer mb-0" 
-    @click="add">{{ text }}<i class="far fa-star" /></b>
-  <b 
-    v-else 
-    :class="color" 
-    :title="`Remover ${object.name} dos Favoritos`" 
-    class="h6 pointer mb-0" 
-    @click="remove">Remover dos Favoritos: <i class="fas fa-star text-primary text-primary" /></b>
+  <b v-if="!favorite" :class="color" class="h6 pointer mb-0" title="Adicionar aos Favoritos" @click="add">{{ text }}<i class="far fa-star" /></b>
+  <b v-else :class="color" class="h6 pointer mb-0" title="Remover dos Favoritos" @click="remove">Remover dos Favoritos: <i class="fas fa-star text-warning text-primary" /></b>
 </template>
 
 <script>
@@ -33,7 +23,7 @@ export default {
     color: {
       type: String,
       required: false,
-      default: "text-dark"
+      default: "text-white"
     }
   },
   data() {
@@ -70,6 +60,7 @@ export default {
       } else {
         localStorage.setItem([this.type], JSON.stringify(items));
       }
+
       this.favorite = false;
     },
     searchItem() {
@@ -90,9 +81,11 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss">
 .pointer {
   cursor: pointer;
-  z-index: 100000000 !important;
+  i {
+    font-size: 1.3rem;
+  }
 }
 </style>

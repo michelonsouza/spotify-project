@@ -6,17 +6,16 @@
 import * as types from "@/store/types";
 import { mapActions } from "vuex";
 
-import AuthLoading from "@/components/AuthLoading.vue";
+import Loading from "@/components/Loading.vue";
 
 export default {
   name: "Auth",
   components: {
-    appLoading: AuthLoading
+    appLoading: Loading
   },
   created() {
     this[types.ACTION_SET_USER_AUTH]();
     this[types.ACTION_SET_AUTH](true);
-    this[types.ACTION_SET_USER_TOP_ARTISTS](true);
     if (!localStorage.getItem("token")) {
       this[types.ACTION_SET_LOGIN]();
     } else {
@@ -32,12 +31,11 @@ export default {
       types.ACTION_SET_USER_AUTH,
       types.ACTION_SET_USER,
       types.ACTION_SET_AUTH,
-      types.ACTION_SET_LOGIN,
-      types.ACTION_SET_USER_TOP_ARTISTS
+      types.ACTION_SET_LOGIN
     ])
   }
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
 </style>

@@ -1,33 +1,58 @@
 <template>
   <div id="app">
-    <app-header v-if="$route.path !== '/auth'" />
+    <app-header />
+    <app-flut-footer />
     <transition 
-      name="fade" 
+      name="slide" 
       mode="out-in">
-      <router-view class="pt-5 mt-5" />
+      <router-view class="pt-5" />
     </transition>
-    <app-float-footer />
   </div>
 </template>
 
 <script>
 import Header from "@/components/Header.vue";
-import FloatFooter from "@/components/FloatFooter.vue";
+import FlutFooter from "@/components/FlutFooter.vue";
 
 export default {
+  name: "App",
   components: {
     appHeader: Header,
-    appFloatFooter: FloatFooter
+    appFlutFooter: FlutFooter
   }
 };
 </script>
-
 
 <style lang="scss">
 * {
   font-family: "Lato", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Let's get this party started */
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: var(--pink);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+}
+::-webkit-scrollbar-thumb:window-inactive {
+  background: rgba(191, 53, 134, 0.4);
 }
 
 body {
@@ -47,55 +72,36 @@ body {
     z-index: -1;
   }
 
-  .fade-enter-active {
+  .slide-enter-active {
     transition: opacity 250ms ease;
-    animation: fade-in 250ms ease-in forwards;
+    animation: slide-in 250ms ease-in forwards;
   }
 
-  .fade-leave-active {
+  .slide-leave-active {
     transition: opacity 250ms ease;
-    animation: fade-out 250ms ease-in forwards;
+    animation: slide-out 250ms ease-in forwards;
   }
 
-  @keyframes fade-in {
+  @keyframes slide-in {
     from {
+      transform: translateY(-30px);
       opacity: 0;
     }
     to {
+      transform: translateY(0);
       opacity: 1;
     }
   }
 
-  @keyframes fade-out {
+  @keyframes slide-out {
     from {
+      transform: translateY(0);
       opacity: 1;
     }
     to {
+      transform: translateY(-30px);
       opacity: 0;
     }
-  }
-
-  ::-webkit-scrollbar {
-    width: 7px;
-  }
-
-  ::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
-    background: var(--pink);
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
-    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
-  }
-
-  ::-webkit-scrollbar-thumb:window-inactive {
-    background: rgba(191, 53, 134, 0.4);
   }
 }
 </style>

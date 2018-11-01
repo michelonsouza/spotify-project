@@ -1,66 +1,104 @@
 <template>
-  <div class="artists">
-    <app-page-header 
-      type="artist" 
-      page-title="Artistas" 
-      @searched="show" 
-      @clean="loading = true" />
-
-    <transition 
-      name="fade" 
-      mode="out-in">
-      <b-row 
-        v-if="!loading && artistList && !artist" 
-        key="artist-list" 
-        class="mx-0 mt-3">
-        <app-artist-card 
-          v-for="artist in artistList" 
-          :key="artist.id" 
-          :artist="artist" />
+  <div class="artists pt-5 mt-3">
+    <b-row class="m-0">
+      <app-page-title title="Artistas" />
+    </b-row>
+    <b-row class="m-0">
+      <app-search type="artist" @returnData="setData" />
+    </b-row>
+    <transition-group name="slide" mode="out-in">
+      <b-row v-if="artists && showSearch" key="artists" class="m-0 py-3">
+        <app-artist-card v-for="artist in artists" :key="artist.id" :artist="artist" @artistEmit="artistDescShow" />
       </b-row>
-      <app-general-description 
-        v-else 
-        key="general-description" 
-        :object="artist" 
-        type="artist" 
-        desc-title="Álbuns" 
-        class="mt-4" />
-    </transition>
+      <b-row v-if="notFound" key="not-found" class="m-0 py-3">
+        <b-container>
+          <p class="text-center text-white h4">Não encontramos nenhum resultado para <b>{{ searchText }}</b></p>
+        </b-container>
+      </b-row>
+      <b-row v-if="loading" key="loading" class="m-0 py-3">
+        <b-container class="text-center">
+          <app-loading-icon />
+        </b-container>
+      </b-row>
+      <app-artist-description v-if="showSearch && haveArtist" key="artistDescription" />
+    </transition-group>
   </div>
 </template>
 
 <script>
 import * as types from "@/store/types";
-import { mapGetters } from "vuex";
-import PageHeader from "@/components/PageHeader.vue";
-import GeneralDescription from "@/components/GeneralDescription.vue";
+import Search from "@/components/Search.vue";
+import PageTitle from "@/components/PageTitle.vue";
 import ArtistCard from "@/components/ArtistCard.vue";
+import LoadingIcon from "@/components/LoadingIcon.vue";
+import ArtistDescription from "@/components/ArtistDescription.vue";
 
 export default {
   name: "Artists",
   components: {
-    appPageHeader: PageHeader,
+    appSearch: Search,
+    appPageTitle: PageTitle,
     appArtistCard: ArtistCard,
-    appGeneralDescription: GeneralDescription
+    appLoadingIcon: LoadingIcon,
+    appArtistDescription: ArtistDescription
   },
   data() {
     return {
-      loading: true
+      artists: false,
+      showSearch: true,
+      notFound: false,
+      loading: false,
+      searchText: ""
     };
   },
   computed: {
-    ...mapGetters({
-      artistList: types.GETTER_ARTIST_LIST,
-      artist: types.GETTER_ARTIST
-    })
+    haveArtist() {
+      if (this.$store.getters[types.GETTER_ARTIST]) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  },
+  created() {
+    this.$store.dispatch(types.ACTION_VERIFY_LOGIN_ENTER);
   },
   methods: {
-    show() {
-      this.loading = false;
+    setData(returnVal) {
+      this.artists = returnVal.data.artists.items;
+      this.searchText = returnVal.value;
+
+      this.showSearch = false;
+      this.loading = true;
+      this.notFound = false;
+
+      setTimeout(() => {
+        if (this.artists.length === 0) {
+          this.notFound = true;
+          this.showSearch = false;
+        } else {
+          this.notFound = false;
+          this.showSearch = true;
+        }
+        this.loading = false;
+      }, 2000);
+    },
+    artistDescShow(artist) {
+      const payload = {
+        artist: artist,
+        status: true
+      };
+
+      this.$store.dispatch(types.ACTION_SET_ARTIST, payload).then(() => {
+        this.loading = true;
+        this.artists = false;
+        this.showSearch = false;
+        setTimeout(() => {
+          this.loading = false;
+          this.showSearch = true;
+        }, 500);
+      });
     }
   }
 };
 </script>
-
-<style>
-</style>

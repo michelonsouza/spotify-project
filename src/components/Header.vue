@@ -5,7 +5,7 @@
       type="dark" 
       class="bg-header" 
       fixed="top">
-      <b-navbar-toggle target="nav_collapse" />
+      <b-navbar-toggle target="nav_collapse"/>
       <router-link 
         to="/" 
         exact><img 
@@ -52,14 +52,14 @@
               v-if="auth" 
               variant="primary" 
               size="lg" 
-              class="login ml-md-2 mt-md-0 nav-link px-3 text-white" 
-              @click="logout"><i class="fab fa-spotify" />&nbsp;&nbsp;Sair do Spotify</b-btn>
+              class="login  ml-md-2 mt-md-0" 
+              @click="logout"><i class="fab fa-spotify"/>&nbsp;&nbsp;Sair do Spotify</b-btn>
             <b-btn 
               v-else 
               variant="primary" 
               size="lg" 
-              class="login  ml-md-2 mt-md-0 nav-link px-3 text-white" 
-              @click="login"><i class="fab fa-spotify" />&nbsp;&nbsp;Entrar no spotify</b-btn>
+              class="login  ml-md-2 mt-md-0" 
+              @click="login"><i class="fab fa-spotify"/>&nbsp;&nbsp;Entrar no spotify</b-btn>
           </b-navbar>
         </b-navbar-nav>
 
@@ -75,9 +75,10 @@ import { mapGetters } from "vuex";
 export default {
   name: "AppHeader",
   computed: {
-    ...mapGetters({
-      auth: types.GETTER_AUTH
-    }),
+    ...mapGetters([types.GETTER_AUTH, types.GETTER_USER]),
+    auth() {
+      return this[types.GETTER_AUTH];
+    },
     route() {
       return this.$route.path !== "/auth";
     }

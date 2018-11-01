@@ -1,44 +1,39 @@
-import * as types from "@/store/types";
-import client from "@/config/sdkSpotify.config";
 import router from "@/routes";
+import * as types from "@/store/types";
 
 export default {
   [types.ACTION_SET_AUTH]: ({ commit, dispatch }, auth) => {
     commit(types.MUTATE_SET_AUTH, auth);
     dispatch(types.ACTION_SET_USER);
-    if (!auth) {
-      dispatch(types.ACTION_SET_USER_TOP_ARTISTS, false);
-    }
   },
   [types.ACTION_SET_USER_AUTH]: ({ commit }) => {
     commit(types.MUTATE_SET_USER_AUTH);
   },
-  [types.ACTION_SET_LOGIN]: async ({ commit }) => {
-    await client.login().then(url => {
-      commit(types.MUTATE_SET_AUTH, true);
-      window.location.href = url;
-    });
+  [types.ACTION_SET_LOGIN]: ({ commit }) => {
+    commit(types.MUTATE_SET_LOGIN);
   },
-  [types.ACTION_VERIFY_LOGIN_ENTER]: async ({ commit, dispatch, getters }) => {
+  [types.ACTION_VERIFY_LOGIN_ENTER]: ({ commit, dispatch }) => {
     if (localStorage.getItem("expiresIn")) {
       const expires = new Date(localStorage.getItem("expiresIn")).getTime();
-      const now = Date.now();
+      const now = new Date().getTime();
 
       if (now < expires) {
-        commit(types.MUTATE_SET_AUTH, true);
-        if (!getters[types.GETTER_TOKEN]) {
-          await dispatch(types.ACTION_SET_USER_AUTH);
-        }
-        if (!getters[types.GETTER_USER]) {
-          await dispatch(types.ACTION_SET_USER);
-        }
-        if (!getters[types.GETTER_USER_TOP_ARTISTS]) {
-          await dispatch(types.ACTION_SET_USER_TOP_ARTISTS, true);
-        }
+        dispatch(types.ACTION_SET_USER_AUTH)
+          .then(() => {
+            commit(types.MUTATE_SET_AUTH, true);
+          })
+          .then(() => {
+            commit(types.MUTATE_SET_USER);
+          })
+          .catch(error => {
+            console.log(error);
+          });
       } else {
         commit(types.MUTATE_SET_AUTH, false);
         router.push("/");
       }
+    } else {
+      router.push("/");
     }
   }
 };
