@@ -42,7 +42,7 @@ VUE_APP_REDIRECT_URI=http://localhost:8080/auth
 ### No arquivo `.env.production` insira sua `URL` para redirecionamento para ambiente de produção, previamente configurada no Dashboard do Spotify
 
 ```bash
-VUE_APP_REDIRECT_URI=INSIRA_SUA_URL
+VUE_APP_REDIRECT_URI=INSIRA_SUA_URL_DE_REDIRECIONAMENTO
 ```
 
 ### Compilar pra desenvolvimento com hot-reload
