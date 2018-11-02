@@ -7,7 +7,7 @@
 
 <script>
 export default {
-  name: "AppHomeLoginButton",
+  name: "HomeLoginButton",
   methods: {
     login() {
       this.$router.push("/auth");

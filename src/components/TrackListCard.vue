@@ -1,5 +1,6 @@
 <template>
   <b-col 
+    key="track_list" 
     cols="12" 
     md="8" 
     offset-md="2" 
@@ -9,7 +10,7 @@
     <b-list-group>
       <b-list-group-item 
         v-for="track in trackList" 
-        :key="track.id">
+        :key="`track${track.id}`">
         <small><i class="fas fa-hashtag text-primary" /> <b>{{ track.track_number }}</b> - <b>{{ track.name }}</b> - {{ timeCalc(track.duration_ms) }} -
           <app-favorite-button 
             :object="track" 

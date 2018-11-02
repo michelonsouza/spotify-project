@@ -1,8 +1,15 @@
 <template>
   <b-row class="bg-light-white m-0 pt-3">
-    <slot/>
+    <slot />
   </b-row>
 </template>
+
+<script>
+export default {
+  name: "DescriptionWhite"
+};
+</script>
+
 
 <style>
 .bg-light-white {

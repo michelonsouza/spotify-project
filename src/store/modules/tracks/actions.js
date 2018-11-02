@@ -20,7 +20,7 @@ export default {
           console.log(error);
         });
     } else {
-      commit(types.MUTATE_SET_TRACK, track);
+      commit(types.MUTATE_SET_TRACK, false);
     }
   },
   [types.ACTION_SET_TRACK_LIST]: ({ commit }, { trackList, status }) => {

@@ -31,7 +31,7 @@ import * as types from "@/store/types";
 import axios from "axios";
 
 export default {
-  name: "AppSearch",
+  name: "Search",
   props: {
     type: {
       type: String,

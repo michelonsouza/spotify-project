@@ -17,9 +17,9 @@
         cols="12" 
         md="3" />
       <!-- eslint-disable -->
-      <component v-for="item in objectType" v-if="descType !== 'trackList'" :is="card" v-bind="{[descType]: item}" :key="item.id" />
+      <component v-if="descType !== 'trackList'" v-for="item in objectType" :is="card" v-bind="{[descType]: item}" :key="item.id" />
       <!-- eslint-disable -->
-      <app-track-list-card :track-list="objectType" />
+      <app-track-list-card v-if="descType === 'trackList'" :track-list="objectType" />
     </app-description-white>
   </div>
 </template>
@@ -81,6 +81,8 @@ export default {
           return this.object[`${this.descType}s`];
         case "album":
           return this.object.tracks.items;
+        default:
+          return false;
       }
     }
   },
@@ -92,13 +94,17 @@ export default {
       [this.type]: false,
       status: false
     });
+    this.$store.dispatch(types[`ACTION_SET_${this.type.toUpperCase()}_LIST`], {
+      [`${this.type}List`]: false,
+      status: false
+    });
   },
   methods: {
     captalize(string) {
       return string.replace(/\b\w/g, l => l.toUpperCase());
     },
     setTrackAlbum() {
-      if (this.type == "album") {
+      if (this.type == "album" && this.object.tracks.items.length > 0) {
         const object = this.object;
         object.tracks.items.forEach(e => {
           e.album = {};
@@ -120,6 +126,8 @@ export default {
           album: object,
           status: false
         });
+      } else {
+        return false;
       }
     }
   }

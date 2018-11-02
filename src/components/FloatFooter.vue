@@ -71,6 +71,7 @@
 
 <script>
 export default {
+  name: "FloatFooter",
   data() {
     return {
       activeFlut: false,

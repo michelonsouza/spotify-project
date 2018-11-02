@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  name: "AppLoadingFullScreen"
+  name: "AuthLoading"
 };
 </script>
 

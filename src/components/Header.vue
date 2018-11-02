@@ -73,7 +73,7 @@ import * as types from "@/store/types";
 import { mapGetters } from "vuex";
 
 export default {
-  name: "AppHeader",
+  name: "Header",
   computed: {
     ...mapGetters({
       auth: types.GETTER_AUTH

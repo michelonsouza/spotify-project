@@ -31,7 +31,7 @@ import { mapGetters } from "vuex";
 import HomeLoginButton from "@/components/HomeLoginButton.vue";
 
 export default {
-  name: "AppHomeBanner",
+  name: "HomeBanner",
   components: {
     appHomeLoginButton: HomeLoginButton
   },
